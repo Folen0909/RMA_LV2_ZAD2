@@ -37,6 +37,7 @@ class NewInspiringPersonFragment : Fragment() {
             newInspiringPersonBinding.etNewPersonImageLinkInput.setText(inspiringPerson.imageLink)
             var quotes = ""
             for(quote in inspiringPerson.quotes) quotes += quote + "\n"
+            quotes = quotes.trimEnd()
             newInspiringPersonBinding.etNewPersonQuotesInput.setText(quotes)
             newInspiringPersonBinding.bDeletePerson.setOnClickListener{ deleteInspiringPerson(inspiringPerson) }
             newInspiringPersonBinding.bDeletePerson.isEnabled = true
