@@ -9,12 +9,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import hr.ferit.famouspersonsfragments.adapters.InspiringPersonAdapter
 import hr.ferit.famouspersonsfragments.databinding.FragmentInspiringPersonListBinding
-import hr.ferit.famouspersonsfragments.listeners.OnInspiringPersonSelectedListener
+import hr.ferit.famouspersonsfragments.listeners.OnInspiringPersonClickListener
 import hr.ferit.famouspersonsfragments.repository.InspiringPersonRepository
 
 class InspiringPersonListFragment : Fragment() {
 
-    private lateinit var onInspiringPersonSelectedListener: OnInspiringPersonSelectedListener
+    private lateinit var onInspiringPersonClickListener: OnInspiringPersonClickListener
     private lateinit var inspiringPersonListBinding: FragmentInspiringPersonListBinding
     private val inspiringPersonRepository = InspiringPersonRepository
 
@@ -30,7 +30,7 @@ class InspiringPersonListFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnInspiringPersonSelectedListener) onInspiringPersonSelectedListener = context
+        if (context is OnInspiringPersonClickListener) onInspiringPersonClickListener = context
     }
     override fun onResume() {
         super.onResume()
@@ -42,8 +42,9 @@ class InspiringPersonListFragment : Fragment() {
             LinearLayoutManager.VERTICAL,
             false
         )
-        inspiringPersonListBinding.rvPersons.adapter = InspiringPersonAdapter(inspiringPersonRepository.getInspiringPersons(), onInspiringPersonSelectedListener)
+        inspiringPersonListBinding.rvPersons.adapter = InspiringPersonAdapter(inspiringPersonRepository.getInspiringPersons(), onInspiringPersonClickListener)
     }
+
 
     companion object {
         const val TAG = "Inspiring Person List"
@@ -51,5 +52,4 @@ class InspiringPersonListFragment : Fragment() {
             return InspiringPersonListFragment()
         }
     }
-
 }

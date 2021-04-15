@@ -26,6 +26,8 @@ class NewInspiringPersonFragment : Fragment() {
     ): View? {
         newInspiringPersonBinding = FragmentNewInspiringPersonBinding.inflate(inflater, container, false)
         newInspiringPersonBinding.bNewPersonSave.setOnClickListener{ saveInspiringPerson() }
+        newInspiringPersonBinding.bDeletePerson.isEnabled = false
+        newInspiringPersonBinding.bDeletePerson.isClickable = false
         arguments?.let {
             inspiringPerson = it.getSerializable(KEY_INSPIRING_PERSON) as InspiringPerson
             newInspiringPersonBinding.etNewPersonNameInput.setText(inspiringPerson.name)
@@ -36,8 +38,16 @@ class NewInspiringPersonFragment : Fragment() {
             var quotes = ""
             for(quote in inspiringPerson.quotes) quotes += quote + "\n"
             newInspiringPersonBinding.etNewPersonQuotesInput.setText(quotes)
+            newInspiringPersonBinding.bDeletePerson.setOnClickListener{ deleteInspiringPerson(inspiringPerson) }
+            newInspiringPersonBinding.bDeletePerson.isEnabled = true
+            newInspiringPersonBinding.bDeletePerson.isClickable = true
         }
         return newInspiringPersonBinding.root
+    }
+
+    private fun deleteInspiringPerson(inspiringPerson: InspiringPerson) {
+        inspiringPersonRepository.delete(inspiringPerson)
+        fragmentManager?.popBackStack();
     }
 
     private fun saveInspiringPerson() {

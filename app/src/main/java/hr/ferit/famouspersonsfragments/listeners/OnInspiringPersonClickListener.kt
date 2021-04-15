@@ -2,6 +2,7 @@ package hr.ferit.famouspersonsfragments.listeners
 
 import hr.ferit.famouspersonsfragments.model.InspiringPerson
 
-interface OnInspiringPersonSelectedListener {
+interface OnInspiringPersonClickListener {
     fun onInspiringPersonSelected(inspiringPerson: InspiringPerson)
+    fun onInspiringPersonQuote(inspiringPerson: InspiringPerson)
 }

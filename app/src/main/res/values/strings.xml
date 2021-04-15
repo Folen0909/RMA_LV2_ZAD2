@@ -9,4 +9,5 @@
     <string name="newPerson_imageLinkInputHint">Enter image link:</string>
     <string name="newPerson_descriptionInputHint">Enter short description:</string>
     <string name="newPerson_quotesInputHint">Enter quote (separate using newline):</string>
+    <string name="deletePerson_Text">Delete</string>
 </resources>

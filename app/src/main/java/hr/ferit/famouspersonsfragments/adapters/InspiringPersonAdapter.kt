@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import hr.ferit.famouspersonsfragments.R
-import hr.ferit.famouspersonsfragments.listeners.OnInspiringPersonSelectedListener
+import hr.ferit.famouspersonsfragments.listeners.OnInspiringPersonClickListener
 import hr.ferit.famouspersonsfragments.model.InspiringPerson
 
 class InspiringPersonAdapter(inspiringPersons: List<InspiringPerson>,
-                             private val listener: OnInspiringPersonSelectedListener
+                             private val clickListener: OnInspiringPersonClickListener
 ) : RecyclerView.Adapter<InspiringPersonViewHolder>() {
 
     private val inspiringPersons: MutableList<InspiringPerson> = mutableListOf()
@@ -31,8 +31,7 @@ class InspiringPersonAdapter(inspiringPersons: List<InspiringPerson>,
 
     override fun onBindViewHolder(holder: InspiringPersonViewHolder, position: Int) {
         val inspiringPerson = inspiringPersons[position]
-        holder.bind(inspiringPerson)
-        holder.itemView.setOnClickListener { listener.onInspiringPersonSelected(inspiringPerson) }
+        holder.bind(inspiringPerson, clickListener)
     }
 
     override fun getItemCount(): Int {
