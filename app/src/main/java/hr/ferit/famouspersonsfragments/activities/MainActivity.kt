@@ -18,7 +18,6 @@ class MainActivity : AppCompatActivity(), OnInspiringPersonClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
-        mainBinding.fabAddNote.setOnClickListener{createNewInspiringPerson()}
         setContentView(mainBinding.root)
 
         if(savedInstanceState == null){
@@ -26,15 +25,6 @@ class MainActivity : AppCompatActivity(), OnInspiringPersonClickListener {
                     .add(R.id.fl_fragmentContainer, InspiringPersonListFragment.create(), InspiringPersonListFragment.TAG)
                     .commit()
         }
-    }
-
-    private fun createNewInspiringPerson() {
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.fl_fragmentContainer,
-                    NewInspiringPersonFragment.create(),
-                    NewInspiringPersonFragment.TAG)
-                .addToBackStack(null)
-                .commit()
     }
 
     override fun onInspiringPersonSelected(inspiringPerson: InspiringPerson) {

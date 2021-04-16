@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import hr.ferit.famouspersonsfragments.R
 import hr.ferit.famouspersonsfragments.adapters.InspiringPersonAdapter
 import hr.ferit.famouspersonsfragments.databinding.FragmentInspiringPersonListBinding
 import hr.ferit.famouspersonsfragments.listeners.OnInspiringPersonClickListener
@@ -24,8 +25,19 @@ class InspiringPersonListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         inspiringPersonListBinding = FragmentInspiringPersonListBinding.inflate(inflater, container, false)
+        inspiringPersonListBinding.fabAddNote.setOnClickListener{ createNewInspiringPerson() }
         setupRecyclerView()
         return inspiringPersonListBinding.root
+    }
+
+    private fun createNewInspiringPerson() {
+        // This is the only way I could figure out how to replace fragment within same fragment
+        activity!!.supportFragmentManager.beginTransaction()
+                .replace(R.id.fl_fragmentContainer,
+                        NewInspiringPersonFragment.create(),
+                        NewInspiringPersonFragment.TAG)
+                .addToBackStack(null)
+                .commit()
     }
 
     override fun onAttach(context: Context) {
