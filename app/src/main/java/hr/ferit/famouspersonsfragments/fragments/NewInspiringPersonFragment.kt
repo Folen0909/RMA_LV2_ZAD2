@@ -1,10 +1,14 @@
 package hr.ferit.famouspersonsfragments.fragments
 
+import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import hr.ferit.famouspersonsfragments.R
 import hr.ferit.famouspersonsfragments.databinding.FragmentInspiringPersonListBinding
@@ -12,6 +16,8 @@ import hr.ferit.famouspersonsfragments.databinding.FragmentNewInspiringPersonBin
 import hr.ferit.famouspersonsfragments.databinding.ItemInspiringPersonBinding
 import hr.ferit.famouspersonsfragments.model.InspiringPerson
 import hr.ferit.famouspersonsfragments.repository.InspiringPersonRepository
+import java.text.SimpleDateFormat
+import java.util.*
 
 class NewInspiringPersonFragment : Fragment() {
 
@@ -28,6 +34,8 @@ class NewInspiringPersonFragment : Fragment() {
         newInspiringPersonBinding.bNewPersonSave.setOnClickListener{ saveInspiringPerson() }
         newInspiringPersonBinding.bDeletePerson.isEnabled = false
         newInspiringPersonBinding.bDeletePerson.isClickable = false
+        newInspiringPersonBinding.etNewPersonBirthInput.transformIntoDatePicker(requireContext(), "dd.MM.yyyy.")
+        newInspiringPersonBinding.etNewPersonDeathInput.transformIntoDatePicker(requireContext(), "dd.MM.yyyy.")
         arguments?.let {
             inspiringPerson = it.getSerializable(KEY_INSPIRING_PERSON) as InspiringPerson
             newInspiringPersonBinding.etNewPersonNameInput.setText(inspiringPerson.name)
@@ -60,8 +68,51 @@ class NewInspiringPersonFragment : Fragment() {
         val imageLink = newInspiringPersonBinding.etNewPersonImageLinkInput.text.toString()
         val quotes = newInspiringPersonBinding.etNewPersonQuotesInput.text.toString().split("\n")
         inspiringPerson = InspiringPerson(name, birth, death, description, imageLink, quotes.toMutableList())
-        inspiringPersonRepository.insert(inspiringPerson)
-        fragmentManager?.popBackStack();
+        if (checkInput()) {
+            inspiringPersonRepository.insert(inspiringPerson)
+            fragmentManager?.popBackStack();
+        }
+    }
+
+    private fun checkInput() : Boolean {
+        var emptyInput = ""
+        when {
+            inspiringPerson.name.trim().isEmpty() -> emptyInput = "Invalid name."
+            inspiringPerson.dateOfBirth.isEmpty() -> emptyInput = "Invalid date of birth."
+            inspiringPerson.dateOfDeath.isEmpty() -> emptyInput = "Invalid date of death."
+            inspiringPerson.imageLink.trim().isEmpty() -> emptyInput = "Invalid image link."
+            inspiringPerson.quotes.isEmpty() -> emptyInput = "Invalid quotes."
+            inspiringPerson.shortDescription.trim().isEmpty() -> emptyInput = "Invalid description."
+        }
+        if (emptyInput != "") Toast.makeText(activity, emptyInput, Toast.LENGTH_SHORT).show()
+        return emptyInput == ""
+    }
+
+    private fun EditText.transformIntoDatePicker(context: Context, format: String, maxDate: Date? = null) {
+        isFocusableInTouchMode = false
+        isClickable = true
+        isFocusable = false
+
+        val myCalendar = Calendar.getInstance()
+        val datePickerOnDataSetListener =
+                DatePickerDialog.OnDateSetListener{ _, year, monthOfYear, dayOfMonth ->
+                    myCalendar.set(Calendar.YEAR, year)
+                    myCalendar.set(Calendar.MONTH, monthOfYear)
+                    myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                    val simpleDateFormat = SimpleDateFormat(format, Locale.forLanguageTag("HR"))
+                    setText(simpleDateFormat.format(myCalendar.time))
+                }
+
+        setOnClickListener{
+            DatePickerDialog(
+                    context, datePickerOnDataSetListener, myCalendar
+                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                    myCalendar.get(Calendar.DAY_OF_MONTH)
+            ).run {
+                maxDate?.time?.also { datePicker.maxDate = it }
+                show()
+            }
+        }
     }
 
     companion object {
